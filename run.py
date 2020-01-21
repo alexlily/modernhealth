@@ -8,23 +8,23 @@ from programlibrary.app import create_app
 
 if __name__ == '__main__':
     args = sys.argv
-    # pwd = os.getenv('PWD')
-    # sys.path.append(pwd)
-    # sys.path.append(pwd+'/programlibrary')
-    # sys.path.append(pwd+'/config')
+    
+    # check for required environment variables
+    if "PGPASSWORD" not in os.environ:
+        print("Please export PGPASSWORD=<postgres password>")
+        exit()
 
     if len(args) < 2:
         app = create_app()
         app.run(debug=True)
     elif args[1] == "--seed":
-        # reset data
+        # reset everything
         if "USERNAME" not in os.environ:
             print("Please export USERNAME=<postgres username>")
             exit()
-        if "PGPASSWORD" not in os.environ:
-            print("Please export PGPASSWORD=<postgres password>")
-            exit()
+
         uname = os.environ['USERNAME']
+
         nuke = subprocess.call(["psql", "-U" + uname, "-a", "-f", "nuke.sql", "-w"])
         if nuke != 0:
             print("Error reseting db")

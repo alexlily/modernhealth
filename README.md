@@ -7,11 +7,13 @@ or python run.py --seed or python run.py (will skip the imports)
 
 Run tests:
 
-`pipenv shell`
+`pipenv shell` 
+
 `pytest`
 
-To Do: 
-- test converting models to json and db return value to models 
+To do:
+- test serialization for the actual return values of the endpoints 
+- functional test for the endpoints
 
 API:
 - client calls /api/v1/programs/list to get a list of all the programs available
@@ -21,7 +23,7 @@ API:
 ![Model Relationship Diagram](ModelRelationshipDiagram.jpg)
 
 Future Improvements:
-- add API for writes 
+- add API for writes
 - use defined schemas for the models / improve serialization
 - add authentication 
 - add users table to store what choice they select on multiple choice activities

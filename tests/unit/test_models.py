@@ -3,6 +3,9 @@ from unittest.mock import patch
 
 from programlibrary.models import *
 
+"""
+Tests that model constructors do the expected thing, and that serialization results in the expected thing
+"""
 class TestModelMethods(unittest.TestCase):
 
     def test_format_program(self):

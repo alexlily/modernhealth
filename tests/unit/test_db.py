@@ -1,12 +1,12 @@
 import unittest
 from unittest.mock import patch
 
-from programlibrary.db import format_query, makeQuery
+from programlibrary.db import *
 
 class TestDBMethods(unittest.TestCase):
 
     def test_format_query(self):
-        self.assertEqual(format_query("""select with no arguments;""", []), """select with no arguments;""")
+        self.assertEqual(format_query(GET_PROGRAMS_QUERY, []), """select * from programs;""")
         self.assertEqual(format_query("""select with arguments: {} {} """, [1, 2]), """select with arguments: 1 2 """)
 
     @patch("psycopg2.connect")
@@ -15,7 +15,7 @@ class TestDBMethods(unittest.TestCase):
         expected = []
         mock_connect.return_value.cursor.return_value.fetchall.return_value = expected
 
-        result = makeQuery("""select * from public."programs";""")
+        result = makeQuery(GET_PROGRAMS_QUERY)
 
         self.assertEqual(result, None)
 

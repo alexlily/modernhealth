@@ -2,6 +2,12 @@
 import psycopg2
 from programlibrary.db_config import config
  
+
+GET_PROGRAMS_QUERY = """select * from programs;"""
+GET_PROGRAM_QUERY = """select * from public.programs where id = {};"""
+GET_SECTIONS_QUERY = """select * from sections where program_id = {}"""
+GET_ACTIVITIES_QUERY = """select * from activities where section_id = {}"""
+
 def format_query(query, query_params):
     if query_params:
         return query.format(*query_params)

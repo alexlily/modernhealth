@@ -2,7 +2,7 @@
 
 from flask import Flask, abort, send_file, request
 import json
-from programlibrary.db import makeQuery
+from programlibrary.db import *
 from programlibrary.models import Program, Section, Activity
 
 
@@ -16,7 +16,6 @@ def create_app():
 
   @app.route('/api/v1/programs/list', methods=['GET'])
   def getProgramsList():
-    GET_PROGRAMS_QUERY = """select * from programs;"""
     res = makeQuery(GET_PROGRAMS_QUERY)
     if not res:
       abort(404, 'no programs found')
@@ -26,22 +25,26 @@ def create_app():
 
   @app.route('/api/v1/program/<int:program_id>', methods=['GET'])
   def getProgramDetail(program_id):
-    GET_PROGRAM_QUERY = """select * from public.programs where id = {};"""
+    
     program_result = makeQuery(GET_PROGRAM_QUERY, program_id)
     if not program_result or len(program_result) != 1:
       abort(404, 'program {} not found '.format(program_id))
+    
     program = Program(program_result[0])
-    GET_SECTIONS_QUERY = """select * from sections where program_id = {}"""
+    
     sections_result = makeQuery(GET_SECTIONS_QUERY, program_id)
     sections = [Section(result, request.host_url) for result in sections_result]
 
     for section in sections:
-      GET_ACTIVITIES_QUERY = """select * from activities where section_id = {}"""
-      activities_result = makeQuery(GET_ACTIVITIES_QUERY, section.id)
-      activities = [Activity(result) for result in activities_result]
-      section.activities = activities
+      fillSectionActivities(section)
 
     return json.dumps({"program": program.serialize(), "sections": [section.serialize() for section in sections]})
+
+  def fillSectionActivities(section):
+    activities_result = makeQuery(GET_ACTIVITIES_QUERY, section.id)
+    activities = [Activity(result) for result in activities_result]
+    section.activities = activities
+
 
   @app.route('/api/v1/image/<id>')
   def get_image(id):
